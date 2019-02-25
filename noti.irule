@@ -1,0 +1,17 @@
+when CLIENT_ACCEPTED {
+ set default_pool [LB::server pool]
+ if { [class match [IP::client_addr] equals RT_CLIENT_LIST ] } {
+#     log local5. "CASE 3. Escape iRule : LB Default Pool/////EXCEPT RT CLIENT"
+     event disable all
+     }
+ elseif { [active_members  p_11NOTIb-web-Monitor_80 ] < 1 } {
+#    log local5. "CASE 1. p_11NOTIb-web_80/////MONITOR HTTP SERVERS DOWN"
+     pool p_11NOTIb-web_80
+     event disable all
+  }
+ elseif { [active_members $default_pool ] < 1 } {
+#    log local5. "CASE 2. DEFAULT_POOL_80/////DEFAULT POOL(REAL HTTP SERVERS) DOWN"
+     pool p_11NOTIb-web_80
+     event disable all
+  }
+}
